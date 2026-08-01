@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+@theme {
+  /* Colors */
+  --color-main: #f21773;
+  --color-primary: #ffffff;
+  --color-secondary: #210163;
+  --color-text-black: #000000;
+  --color-purple: #661e98;
+  --color-blue: #396fd4;
+  --color-green: #06881c;
+  --color-orange: #f79e1b;
+  --color-grey: #dee1e6;
+
+  /* Color with Alpha (0x80 = 50% opacity) */
+  --color-light-gray: rgba(128, 128, 128, 0.1);
+}
+
+*root {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Hide scrollbar for carousel */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
