@@ -155,7 +155,7 @@ export default function About() {
           transition={{ duration: 0.4, type: "tween", delay: 0.1 }}
           className="flex flex-col lg:w-1/2 w-full text-left items-start justify-center"
         >
-          <span className="text-sm font-semibold text-[#4c1d95] bg-purple-50 px-3 py-1 rounded-full mb-4">
+          <span className="badge-purple mb-4">
             About Us
           </span>
           <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 mb-4">
@@ -196,7 +196,7 @@ export default function About() {
               viewport={{ once: true }}
               transition={{ duration: 0.4, type: "tween", delay: i * 0.1 }}
               whileHover={{ y: -8 }}
-              className="card-item snap-start shrink-0 w-[320px] sm:w-[360px] bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-2xl transition-shadow duration-300 overflow-hidden flex flex-col group"
+              className="card-hover group card-item snap-start shrink-0 w-[320px] sm:w-[360px]"
             >
               <div className="overflow-hidden aspect-square w-full bg-gray-100">
                 <motion.img
@@ -209,7 +209,7 @@ export default function About() {
               </div>
               <div className="p-6 flex flex-col grow justify-between text-left">
                 <div>
-                  <span className="text-xs font-medium text-[#4c1d95] bg-purple-50 px-2.5 py-1 rounded-full inline-block mb-2">
+                  <span className="badge-purple-sm inline-block mb-2">
                     {member.position}
                   </span>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">
@@ -228,7 +228,7 @@ export default function About() {
         <div className="flex justify-center items-center gap-4 mt-6">
           <button
             onClick={() => scrollMembers("left")}
-            className="p-2 rounded-full border border-gray-200 bg-white hover:bg-gray-100 transition shadow-xs cursor-pointer"
+            className="scroll-nav-btn"
             aria-label="Scroll left"
           >
             <ChevronLeft className="w-5 h-5 text-gray-700" />
@@ -238,10 +238,8 @@ export default function About() {
             {members.map((_, i) => (
               <span
                 key={i}
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  i === activeMemberIndex
-                    ? "w-6 bg-[#4c1d95]"
-                    : "w-2 bg-gray-300"
+                className={`dot ${
+                  i === activeMemberIndex ? "dot-active" : "dot-inactive"
                 }`}
               />
             ))}
@@ -249,7 +247,7 @@ export default function About() {
 
           <button
             onClick={() => scrollMembers("right")}
-            className="p-2 rounded-full border border-gray-200 bg-white hover:bg-gray-100 transition shadow-xs cursor-pointer"
+            className="scroll-nav-btn"
             aria-label="Scroll right"
           >
             <ChevronRight className="w-5 h-5 text-gray-700" />
@@ -271,7 +269,7 @@ export default function About() {
           </div>
           <button
             onClick={() => setIsHistoryModalOpen(true)}
-            className="text-sm font-semibold text-[#4c1d95] hover:underline cursor-pointer shrink-0 self-start sm:self-auto"
+            className="link-view-all"
           >
             See Full History &rarr;
           </button>
@@ -300,7 +298,7 @@ export default function About() {
               </div>
               <div className="p-6 flex flex-col grow justify-between text-left">
                 <div>
-                  <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full inline-block mb-3">
+                  <span className="badge-success inline-block mb-3">
                     {item.date}
                   </span>
                   <h3 className="text-xl font-bold text-gray-900 mb-3">
@@ -371,7 +369,7 @@ export default function About() {
         <div className="flex justify-center items-center gap-4 mt-6">
           <button
             onClick={() => scrollCollabs("left")}
-            className="p-2 rounded-full border border-gray-200 bg-white hover:bg-gray-100 transition shadow-xs cursor-pointer"
+            className="scroll-nav-btn"
             aria-label="Scroll left"
           >
             <ChevronLeft className="w-5 h-5 text-gray-700" />
@@ -381,10 +379,8 @@ export default function About() {
             {collaborations.map((_, i) => (
               <span
                 key={i}
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  i === activeCollabIndex
-                    ? "w-6 bg-[#4c1d95]"
-                    : "w-2 bg-gray-300"
+                className={`dot ${
+                  i === activeCollabIndex ? "dot-active" : "dot-inactive"
                 }`}
               />
             ))}
@@ -392,7 +388,7 @@ export default function About() {
 
           <button
             onClick={() => scrollCollabs("right")}
-            className="p-2 rounded-full border border-gray-200 bg-white hover:bg-gray-100 transition shadow-xs cursor-pointer"
+            className="scroll-nav-btn"
             aria-label="Scroll right"
           >
             <ChevronRight className="w-5 h-5 text-gray-700" />
@@ -449,7 +445,7 @@ export default function About() {
                       className="w-full sm:w-48 aspect-video sm:aspect-square object-cover rounded-xl shrink-0"
                     />
                     <div className="flex flex-col text-left">
-                      <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full w-fit mb-2">
+                      <span className="badge-success w-fit mb-2">
                         {item.date}
                       </span>
                       <h4 className="text-xl font-bold text-gray-900 mb-2">

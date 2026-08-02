@@ -158,7 +158,7 @@ export default function Features() {
           transition={{ duration: 0.4, type: "tween", delay: 0.1 }}
           className="flex flex-col lg:w-1/2 w-full text-left items-start justify-center"
         >
-          <span className="text-sm font-semibold text-[#4c1d95] bg-purple-50 px-3 py-1 rounded-full mb-4">
+          <span className="badge-purple mb-4">
             Our Features
           </span>
           <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 mb-4">
@@ -196,7 +196,7 @@ export default function Features() {
                 transition={{ duration: 0.4, type: "tween", delay: i * 0.1 }}
                 whileHover={{ y: -8 }}
                 onClick={() => openFeatureDetails(item)}
-                className="card-item snap-start shrink-0 w-[320px] sm:w-[380px] bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-2xl transition-shadow duration-300 overflow-hidden flex flex-col group cursor-pointer"
+                className="card-hover group card-item snap-start shrink-0 w-[320px] sm:w-[380px] cursor-pointer"
               >
                 <div className="overflow-hidden aspect-video w-full bg-gray-100">
                   <motion.img
@@ -216,7 +216,7 @@ export default function Features() {
                       {item.desc}
                     </p>
                   </div>
-                  <span className="text-sm font-semibold text-[#4c1d95] mt-4 hover:underline">
+                  <span className="text-sm font-semibold text-brand-purple mt-4 hover:underline">
                     Learn More &rarr;
                   </span>
                 </div>
@@ -227,7 +227,7 @@ export default function Features() {
           <div className="flex justify-center items-center gap-4 mt-6">
             <button
               onClick={() => scrollSection(sIndex, "left")}
-              className="p-2 rounded-full border border-gray-200 bg-white hover:bg-gray-100 transition shadow-xs cursor-pointer"
+              className="scroll-nav-btn"
               aria-label="Scroll left"
             >
               <ChevronLeft className="w-5 h-5 text-gray-700" />
@@ -237,10 +237,10 @@ export default function Features() {
               {section.items.map((_, i) => (
                 <span
                   key={i}
-                  className={`h-2 rounded-full transition-all duration-300 ${
+                  className={`dot ${
                     i === (activeIndices[sIndex] || 0)
-                      ? "w-6 bg-[#4c1d95]"
-                      : "w-2 bg-gray-300"
+                      ? "dot-active"
+                      : "dot-inactive"
                   }`}
                 />
               ))}
@@ -248,7 +248,7 @@ export default function Features() {
 
             <button
               onClick={() => scrollSection(sIndex, "right")}
-              className="p-2 rounded-full border border-gray-200 bg-white hover:bg-gray-100 transition shadow-xs cursor-pointer"
+              className="scroll-nav-btn"
               aria-label="Scroll right"
             >
               <ChevronRight className="w-5 h-5 text-gray-700" />

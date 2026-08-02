@@ -12,6 +12,12 @@
   --color-orange: #f79e1b;
   --color-grey: #dee1e6;
 
+  /* Brand purple accent (buttons, links, badges, gradients) */
+  --color-brand-purple: #4c1d95;
+  --color-brand-purple-dark: #3b1778;
+  --color-brand-purple-mid: #6d28d9;
+  --color-brand-purple-light: #7c3aed;
+
   /* Color with Alpha (0x80 = 50% opacity) */
   --color-light-gray: rgba(128, 128, 128, 0.1);
 }
@@ -28,4 +34,72 @@
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/*
+  Shared component styles.
+  Change a look here once and every page that uses the class picks it up.
+*/
+@layer components {
+  /* Solid brand-purple pill button (e.g. form submit, "Send Another Message") */
+  .btn-primary {
+    @apply bg-brand-purple text-white font-semibold rounded-full hover:bg-brand-purple-dark transition cursor-pointer;
+  }
+
+  /* White-on-purple color pairing used by hero/CTA buttons */
+  .btn-on-brand {
+    @apply bg-white text-brand-purple hover:bg-gray-100 transition;
+  }
+
+  /* Outlined white button color pairing used on purple/gradient backgrounds */
+  .btn-outline-on-brand {
+    @apply text-white hover:bg-white/10 transition;
+  }
+
+  /* Small rounded "eyebrow" label, e.g. "About Us", "Our Features", "Get in Touch" */
+  .badge-purple {
+    @apply text-sm font-semibold text-brand-purple bg-purple-50 px-3 py-1 rounded-full;
+  }
+
+  /* Compact variant, e.g. role tags on team member cards */
+  .badge-purple-sm {
+    @apply text-xs font-medium text-brand-purple bg-purple-50 px-2.5 py-1 rounded-full;
+  }
+
+  /* Success/date pill used on blog + achievement cards */
+  .badge-success {
+    @apply text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full;
+  }
+
+  /* "View all / See full history" text link */
+  .link-view-all {
+    @apply text-sm font-semibold text-brand-purple hover:underline cursor-pointer shrink-0 self-start sm:self-auto;
+  }
+
+  /* Hover-lift card shell used across Blog, About, Features carousels.
+     Pair with a literal "group" class in JSX for group-hover children. */
+  .card-hover {
+    @apply bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-2xl transition-shadow duration-300 overflow-hidden flex flex-col;
+  }
+
+  /* Round prev/next scroll button on horizontal carousels */
+  .scroll-nav-btn {
+    @apply p-2 rounded-full border border-gray-200 bg-white hover:bg-gray-100 transition shadow-xs cursor-pointer;
+  }
+
+  /* Carousel progress dot */
+  .dot {
+    @apply h-2 rounded-full transition-all duration-300;
+  }
+  .dot-active {
+    @apply w-6 bg-brand-purple;
+  }
+  .dot-inactive {
+    @apply w-2 bg-gray-300;
+  }
+
+  /* Text input / textarea used throughout the contact form */
+  .form-input {
+    @apply px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition text-sm;
+  }
 }

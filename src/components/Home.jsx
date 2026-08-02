@@ -108,7 +108,7 @@ export default function Home() {
     <AnimatePresence>
       <section
         key={"hero-section"}
-        className="w-full min-h-dvh sm:min-h-screen relative bg-linear-to-br from-[#4c1d95] via-[#6d28d9] to-[#7c3aed] flex items-center justify-center overflow-hidden"
+        className="w-full min-h-dvh sm:min-h-screen relative bg-linear-to-br from-brand-purple via-brand-purple-mid to-brand-purple-light flex items-center justify-center overflow-hidden"
       >
         <div className="w-full flex flex-col md:flex-row items-center justify-center relative z-10">
           <motion.div
@@ -127,10 +127,10 @@ export default function Home() {
               transactions tailored for Africa's unique needs.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-              <button className="bg-white text-[#4c1d95] px-8 py-4 rounded-full font-semibold hover:bg-gray-100 transition shadow-lg">
+              <button className="btn-on-brand px-8 py-4 rounded-full font-semibold shadow-lg">
                 Download App
               </button>
-              <button className="border-2 border-white text-white px-8 py-3 rounded-full flex items-center gap-2 justify-center hover:bg-white/10 transition">
+              <button className="btn-outline-on-brand border-2 border-white px-8 py-3 rounded-full flex items-center gap-2 justify-center">
                 Contact Us
               </button>
             </div>
@@ -206,7 +206,7 @@ export default function Home() {
                 transition={{ delay: i * 0.1 }}
                 className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition"
               >
-                <div className="w-12 h-12 mx-auto mb-4 bg-[#4c1d95]/10 rounded-full flex items-center justify-center text-2xl">
+                <div className="w-12 h-12 mx-auto mb-4 bg-brand-purple/10 rounded-full flex items-center justify-center text-2xl">
                   {feature.icon === "smartphone" ? (
                     <Smartphone />
                   ) : feature.icon === "security" ? (
@@ -264,7 +264,7 @@ export default function Home() {
               "Integrate your daily financial operations seamlessly with Zentrapay's intuitive mobile dashboard.",
             ].map((text, i) => (
               <div key={i} className="flex gap-4 items-start">
-                <div className="w-8 h-8 bg-[#4c1d95] rounded-full flex items-center justify-center text-white shrink-0">
+                <div className="w-8 h-8 bg-brand-purple rounded-full flex items-center justify-center text-white shrink-0">
                   ✓
                 </div>
                 <p className="text-gray-700 text-sm leading-relaxed text-left">
@@ -366,7 +366,7 @@ export default function Home() {
 
       <section
         key={"5"}
-        className="w-full bg-linear-to-r text-center sm:text-left from-[#4c1d95] to-[#7c3aed] py-16 px-4 relative"
+        className="w-full bg-linear-to-r text-center sm:text-left from-brand-purple to-brand-purple-light py-16 px-4 relative"
       >
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
           <motion.div
@@ -384,10 +384,10 @@ export default function Home() {
               goal-oriented catalysts for change. Collaboratively.
             </p>
             <div className="flex flex-wrap gap-4 justify-center sm:justify-start">
-              <button className="bg-white text-[#4c1d95] px-6 py-3 rounded-lg font-semibold flex items-center gap-2 hover:bg-gray-100 transition">
+              <button className="btn-on-brand px-6 py-3 rounded-lg font-semibold flex items-center gap-2">
                 Google Play
               </button>
-              <button className="border border-white text-white px-6 py-3 rounded-lg flex items-center gap-2 hover:bg-white/10 transition font-semibold">
+              <button className="btn-outline-on-brand border border-white px-6 py-3 rounded-lg flex items-center gap-2 font-semibold">
                 AppStore
               </button>
             </div>
@@ -395,6 +395,7 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4, ease: "easeInOut", type: "tween" }}
             viewport={{ once: true }}
             className="w-full md:w-1/2 flex justify-center"
           >

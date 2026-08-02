@@ -153,7 +153,7 @@ export default function Blog() {
               </div>
               <button
                 onClick={() => alert(`Viewing all items for ${section.title}`)}
-                className="text-sm font-semibold text-[#4c1d95] hover:underline cursor-pointer shrink-0 self-start sm:self-auto"
+                className="link-view-all"
               >
                 View All &rarr;
               </button>
@@ -173,7 +173,7 @@ export default function Blog() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, type: "tween", delay: i * 0.1 }}
                   whileHover={{ y: -8 }}
-                  className="card-item snap-start shrink-0 w-[320px] sm:w-[350px] bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-2xl transition-shadow duration-300 overflow-hidden flex flex-col group"
+                  className="card-hover group card-item snap-start shrink-0 w-[320px] sm:w-[350px]"
                 >
                   <div className="overflow-hidden aspect-video w-full bg-gray-100">
                     <motion.img
@@ -185,14 +185,14 @@ export default function Blog() {
                     />
                   </div>
                   <div className="p-6 flex flex-col grow justify-between text-left">
-                    <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#4c1d95] transition-colors mb-3 line-clamp-2">
+                    <h3 className="text-lg font-bold text-gray-900 group-hover:text-brand-purple transition-colors mb-3 line-clamp-2">
                       {n.heading}
                     </h3>
                     <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-                      <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
+                      <span className="badge-success">
                         {n.date}
                       </span>
-                      <span className="text-xs font-semibold text-[#4c1d95] group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+                      <span className="text-xs font-semibold text-brand-purple group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
                         Read more &rarr;
                       </span>
                     </div>
@@ -205,7 +205,7 @@ export default function Blog() {
             <div className="flex justify-center items-center gap-4 mt-6">
               <button
                 onClick={() => scrollByCard("left")}
-                className="p-2 rounded-full border border-gray-200 bg-white hover:bg-gray-100 transition shadow-xs cursor-pointer"
+                className="scroll-nav-btn"
                 aria-label="Scroll left"
               >
                 <ChevronLeft className="w-5 h-5 text-gray-700" />
@@ -215,8 +215,8 @@ export default function Blog() {
                 {section.items.map((_, i) => (
                   <span
                     key={i}
-                    className={`h-2 rounded-full transition-all duration-300 ${
-                      i === activeIndex ? "w-6 bg-[#4c1d95]" : "w-2 bg-gray-300"
+                    className={`dot ${
+                      i === activeIndex ? "dot-active" : "dot-inactive"
                     }`}
                   />
                 ))}
@@ -224,7 +224,7 @@ export default function Blog() {
 
               <button
                 onClick={() => scrollByCard("right")}
-                className="p-2 rounded-full border border-gray-200 bg-white hover:bg-gray-100 transition shadow-xs cursor-pointer"
+                className="scroll-nav-btn"
                 aria-label="Scroll right"
               >
                 <ChevronRight className="w-5 h-5 text-gray-700" />
