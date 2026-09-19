@@ -5,15 +5,15 @@ async function getAbout(req, res, next) {
     const [members, achievements, collaborations] = await Promise.all([
       query(
         `SELECT id, name, position, profile_image_url, description
-         FROM team_members ORDER BY display_order ASC`,
+         FROM team_members ORDER BY id ASC`,
       ),
       query(
         `SELECT id, heading, achievement_date, image_url, description
-         FROM achievements ORDER BY display_order ASC`,
+         FROM achievements ORDER BY id ASC`,
       ),
       query(
         `SELECT id, heading, image_url, description
-         FROM collaborations ORDER BY display_order ASC`,
+         FROM collaborations ORDER BY id ASC`,
       ),
     ]);
 

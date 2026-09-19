@@ -193,7 +193,7 @@ export default function Home() {
           {isLoading ? (
             <p className="text-gray-400 text-sm">Loading...</p>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          highlights.length > 0 &&  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {highlights.map((feature, i) => (
                 <motion.div
                   key={feature.id ?? i}

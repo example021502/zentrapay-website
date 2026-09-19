@@ -16,8 +16,15 @@ async function getHome(req, res, next) {
          FROM testimonials WHERE is_active = TRUE ORDER BY display_order ASC`,
       ),
     ]);
+    if(highlights.err && deviceFeatures.err && testimonials.err){
+      return json({
+         highlights: [],
+      deviceFeatures: [],
+      testimonials: [],
+      })
+    }
 
-    res.json({
+    return res.json({
       highlights: highlights.rows,
       deviceFeatures: deviceFeatures.rows,
       testimonials: testimonials.rows,
