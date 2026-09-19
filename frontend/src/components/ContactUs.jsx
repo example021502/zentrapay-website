@@ -6,14 +6,25 @@ import {
   Send,
   CheckCircle2,
   Globe,
-  MessageSquare,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { getContactInfo, submitContactMessage } from "../lib/api";
+import { FaTwitter } from "react-icons/fa";
+import { useApiData } from "../lib/useApiData";
+import ConnectionNotice from "./ui/ConnectionNotice";
+import { InfoRowSkeleton } from "./ui/Skeletons";
 
 export default function Contact() {
+  // Clear any draft form data from local storage upon unmounting
   useEffect(() => {
     return () => localStorage.removeItem("draftForm");
   }, []);
+
+  // Non-critical: the form still works even if contact details fail to load,
+  // so on error we just fall back to the hardcoded defaults below (the
+  // failure itself is still logged to the console by useApiData).
+  const { data, isLoading, isSlow } = useApiData(getContactInfo);
+  const companyInfo = data?.companyInfo || null;
 
   const [formData, setFormData] = useState({
     name: "",
@@ -24,31 +35,72 @@ export default function Contact() {
 
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
 
+  // Handle input changes for the contact form
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  // Handle contact form submission
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+    setSubmitError(null);
+    try {
+      await submitContactMessage(formData);
       setIsSubmitted(true);
       setFormData({ name: "", email: "", subject: "", message: "" });
-    }, 1000);
+    } catch (err) {
+      setSubmitError(err.message || "Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Handle interactive clicks on contact info cards to launch native applications
+  const handleButtonClick = (id) => {
+    switch (id) {
+      case "email": {
+        const emailAddress = companyInfo?.email || "support@zentrapay.com";
+        // Prefill subject and body prefix for the user's email client
+        const subject = encodeURIComponent("Support Inquiry - Zentrapay");
+        const body = encodeURIComponent(
+          "Hello Zentrapay Team,\n\nI would like to inquire about: ",
+        );
+        window.location.href = `mailto:${emailAddress}?subject=${subject}&body=${body}`;
+        break;
+      }
+      case "phone": {
+        const phoneNumber = companyInfo?.phone || "+15551234567";
+        // Trigger device's phone call handler
+        window.location.href = `tel:${phoneNumber}`;
+        break;
+      }
+      case "map": {
+        const address =
+          companyInfo?.address ||
+          "123 Fintech Avenue, Suite 400, San Francisco, CA";
+        window.open(
+          `https://maps.google.com/?q=${encodeURIComponent(address)}`,
+          "_blank",
+        );
+        break;
+      }
+      default:
+        break;
+    }
   };
 
   return (
     <div className="w-full py-15 px-5 bg-gray-50 flex flex-col justify-center items-center space-y-16">
+      {/* Intro Section */}
       <section
         key={"contact_intro_section"}
         className="w-full max-w-7xl text-center flex flex-col items-center gap-4"
       >
-        <span className="badge-purple">
-          Get in Touch
-        </span>
+        <span className="badge-purple">Get in Touch</span>
         <h1 className="text-4xl font-extrabold tracking-tight text-gray-900">
           We’d Love to Hear From You
         </h1>
@@ -58,7 +110,9 @@ export default function Contact() {
         </p>
       </section>
 
+      {/* Main Grid Section */}
       <section className="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Contact Information Sidebar */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -75,67 +129,88 @@ export default function Contact() {
               ready to help you navigate your financial journey.
             </p>
 
-            <div className="flex flex-col gap-6">
-              <div className="flex items-start gap-4">
-                <div className="p-3 bg-purple-50 rounded-2xl text-brand-purple">
-                  <Mail className="w-6 h-6" />
+            {isLoading ? (
+              <>
+                <InfoRowSkeleton count={3} />
+                {isSlow && <ConnectionNotice className="mt-2" />}
+              </>
+            ) : (
+              <div className="flex flex-col gap-6">
+                {/* Email Button/Item */}
+                <div
+                  onClick={() => handleButtonClick("email")}
+                  className="flex items-start gap-4 cursor-pointer group"
+                >
+                  <div className="p-3 bg-purple-50 rounded-2xl text-brand-purple group-hover:bg-purple-100 transition">
+                    <Mail className="w-6 h-6" />
+                  </div>
+                  <div className="flex flex-col text-left">
+                    <span className="text-sm font-semibold text-gray-900 group-hover:text-brand-purple transition">
+                      Email Us
+                    </span>
+                    <span className="text-sm text-gray-600">
+                      {companyInfo?.email || "support@zentrapay.com"}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex flex-col text-left">
-                  <span className="text-sm font-semibold text-gray-900">
-                    Email Us
-                  </span>
-                  <span className="text-sm text-gray-600">
-                    support@zentrapay.com
-                  </span>
-                </div>
-              </div>
 
-              <div className="flex items-start gap-4">
-                <div className="p-3 bg-purple-50 rounded-2xl text-brand-purple">
-                  <Phone className="w-6 h-6" />
+                {/* Phone Button/Item */}
+                <div
+                  onClick={() => handleButtonClick("phone")}
+                  className="flex items-start gap-4 cursor-pointer group"
+                >
+                  <div className="p-3 bg-purple-50 rounded-2xl text-brand-purple group-hover:bg-purple-100 transition">
+                    <Phone className="w-6 h-6" />
+                  </div>
+                  <div className="flex flex-col text-left">
+                    <span className="text-sm font-semibold text-gray-900 group-hover:text-brand-purple transition">
+                      Call Us
+                    </span>
+                    <span className="text-sm text-gray-600">
+                      {companyInfo?.phone || "+1 (555) 123-4567"}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex flex-col text-left">
-                  <span className="text-sm font-semibold text-gray-900">
-                    Call Us
-                  </span>
-                  <span className="text-sm text-gray-600">
-                    +1 (555) 123-4567
-                  </span>
-                </div>
-              </div>
 
-              <div className="flex items-start gap-4">
-                <div className="p-3 bg-purple-50 rounded-2xl text-brand-purple">
-                  <MapPin className="w-6 h-6" />
-                </div>
-                <div className="flex flex-col text-left">
-                  <span className="text-sm font-semibold text-gray-900">
-                    Office Location
-                  </span>
-                  <span className="text-sm text-gray-600">
-                    123 Fintech Avenue, Suite 400, San Francisco, CA
-                  </span>
+                {/* Office Location Item */}
+                <div
+                  onClick={() => handleButtonClick("map")}
+                  className="flex items-start gap-4 cursor-pointer group"
+                >
+                  <div className="p-3 bg-purple-50 rounded-2xl text-brand-purple group-hover:bg-purple-100 transition">
+                    <MapPin className="w-6 h-6" />
+                  </div>
+                  <div className="flex flex-col text-left">
+                    <span className="text-sm font-semibold text-gray-900 group-hover:text-brand-purple transition">
+                      Office Location
+                    </span>
+                    <span className="text-sm text-gray-600">
+                      {companyInfo?.address ||
+                        "123 Fintech Avenue, Suite 400, San Francisco, CA"}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
 
+          {/* Social Links Footer */}
           <div className="pt-4 border-t border-gray-100 flex flex-col gap-3 text-left">
             <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
               Connect With Us
             </span>
             <div className="flex items-center gap-3">
               <a
-                href="https://twitter.com"
+                href={companyInfo?.twitter_url || "https://twitter.com"}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2.5 bg-gray-50 hover:bg-purple-50 text-gray-600 hover:text-brand-purple rounded-full transition cursor-pointer"
                 aria-label="Social Feed"
               >
-                <MessageSquare className="w-5 h-5" />
+                <FaTwitter className="w-5 h-5" />
               </a>
               <a
-                href="https://zentrapay.com"
+                href={companyInfo?.website_url || "https://zentrapay.com"}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2.5 bg-gray-50 hover:bg-purple-50 text-gray-600 hover:text-brand-purple rounded-full transition cursor-pointer"
@@ -147,6 +222,7 @@ export default function Contact() {
           </div>
         </motion.div>
 
+        {/* Contact Form Section */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -182,6 +258,9 @@ export default function Contact() {
               onSubmit={handleSubmit}
               className="flex w-full flex-col gap-6 text-left"
             >
+              {submitError && (
+                <p className="text-sm text-red-500 -mb-2">{submitError}</p>
+              )}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-2">
                   <label
@@ -197,7 +276,7 @@ export default function Contact() {
                     required
                     value={formData.name}
                     onChange={handleChange}
-                    placeholder="Evans Ackaah"
+                    placeholder="John Doe"
                     className="form-input"
                   />
                 </div>
@@ -215,7 +294,7 @@ export default function Contact() {
                     required
                     value={formData.email}
                     onChange={handleChange}
-                    placeholder="evans@zentrapay.com"
+                    placeholder="johndoe@gmail.com"
                     className="form-input"
                   />
                 </div>

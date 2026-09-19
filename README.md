@@ -1,16 +1,34 @@
-# React + Vite
+# Zentrapay Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Full-stack marketing site for Zentrapay: a React/Vite frontend and a Node.js/Express + PostgreSQL backend.
 
-Currently, two official plugins are available:
+```
+zentrapay-webapp/
+├── frontend/   React + Vite + Tailwind site
+└── backend/    Express API backed by PostgreSQL (zentrapay_website_db)
+```
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Running locally
 
-## React Compiler
+**1. Backend**
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+cd backend
+npm install
+cp .env.example .env    # fill in your PostgreSQL credentials
+npm run db:setup        # creates tables + loads seed content
+npm run dev              # http://localhost:5000
+```
 
-## Expanding the ESLint configuration
+**2. Frontend**
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+cd frontend
+npm install
+cp .env.example .env    # VITE_API_URL defaults to http://localhost:5000/api
+npm run dev              # http://localhost:8081
+```
+
+With both running, every page (Home, About, Blog, Features, Contact Us) fetches its content live from the backend, and the Contact Us form persists submissions to the `contact_messages` table.
+
+See `backend/README.md` for API endpoint details and schema notes.
