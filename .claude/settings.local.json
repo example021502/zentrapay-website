@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(export PGPASSWORD='zentrapay@evansackaa&desiremusarafu#2000#')",
+      "Bash(\"/c/Program Files/PostgreSQL/18/bin/psql.exe\" -h localhost -p 5432 -U zentrapay -d zentrapay_website_db -c \"SELECT current_database\\(\\), current_user, version\\(\\);\")",
+      "Bash(\"/c/Program Files/PostgreSQL/18/bin/psql.exe\" -h localhost -p 5432 -U zentrapay -d zentrapay_website_db -c \"\\\\dt\")",
+      "Bash(npm run *)",
+      "Bash(npm start *)",
+      "Bash(curl *)",
+      "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\).on\\('end',\\(\\)=>{const j=JSON.parse\\(d\\);console.log\\('members',j.members.length,'achievements',j.achievements.length,'collaborations',j.collaborations.length\\)}\\)\")",
+      "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\).on\\('end',\\(\\)=>{const j=JSON.parse\\(d\\);j.categories.forEach\\(c=>console.log\\(c.title, c.items.length\\)\\)}\\)\")",
+      "Bash(where psql *)",
+      "Bash(grep -i \"^pg$\")",
+      "Bash(node -e ' *)"
+    ]
+  }
+}

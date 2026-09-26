@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRightToLine, Menu } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Header() {
   // 1. Fixed public asset path syntax
@@ -17,10 +17,17 @@ export default function Header() {
   ];
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Derived directly from the current URL (instead of its own state) so the
+  // highlighted button always matches reality: on first load, after a
+  // refresh, and when using the browser's back/forward buttons — not just
+  // after a click.
+  const activeButton =
+    location.pathname === "/" ? "home" : location.pathname.replace(/^\//, "");
 
   // 2. Fixed: Initialized state to false (boolean)
   const [isMenu, setIsMenu] = useState(false);
-  const [activeButton, setActiveButton] = useState("home");
 
   const toggleMenu = () => {
     setIsMenu((prev) => !prev);
@@ -28,7 +35,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="w-full z-1000 top-0 bg-secondary text-primary p-4 sm:py-3 flex justify-between flex-row items-center">
+      <header className="w-full z-1000 top-0 bg-secondary text-primary shadow-xl p-4 sm:py-3 flex justify-between flex-row items-center">
         <div className="flex space-x-1 flex-row items-center justify-start w-fit">
           <img
             src={imgSrc ?? imgPlaceholder}
@@ -37,11 +44,10 @@ export default function Header() {
           />
           <h1 className="text-lg font-bold">ZentrapPay</h1>
         </div>
-        <div className="hidden sm:flex flex-2 items-center justify-center space-x-4">
+        <div className="hidden sm:flex flex-2 items-center justify-center space-x-2">
           {buttons.map((b, i) => (
             <button
               onClick={() => {
-                setActiveButton(b.id);
                 b.id === "home" ? navigate(`/`) : navigate(`/${b.id}`);
               }}
               className={`text-sm font-semibold cursor-pointer px-4 py-1.5 transition-all duration-150 hover:scale-[1.05] ease-in-out ${b.id === activeButton ? "border-b-2 border-primary rounded-none" : ""}`}
@@ -99,7 +105,6 @@ export default function Header() {
                   <button
                     onClick={() => {
                       setIsMenu(!isMenu);
-                      setActiveButton(b.id);
                       b.id === "home" ? navigate(`/`) : navigate(`/${b.id}`);
                     }}
                     className={`text-sm text-black font-semibold cursor-pointer hover:text-primary hover:bg-secondary w-full text-left px-2 py-2 rounded-lg transition-all duration-150 ease-in-out hover:scale-[1.05] ${b.id === activeButton ? "border-b-2 border-secondary rounded-none" : ""}`}
