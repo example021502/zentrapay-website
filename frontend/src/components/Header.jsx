@@ -35,7 +35,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="w-full z-1000 top-0 bg-secondary text-primary p-4 sm:py-3 flex justify-between flex-row items-center">
+      <header className="w-full z-1000 top-0 bg-secondary text-primary shadow-xl p-4 sm:py-3 flex justify-between flex-row items-center">
         <div className="flex space-x-1 flex-row items-center justify-start w-fit">
           <img
             src={imgSrc ?? imgPlaceholder}
@@ -44,7 +44,7 @@ export default function Header() {
           />
           <h1 className="text-lg font-bold">ZentrapPay</h1>
         </div>
-        <div className="hidden sm:flex flex-2 items-center justify-center space-x-4">
+        <div className="hidden sm:flex flex-2 items-center justify-center space-x-2">
           {buttons.map((b, i) => (
             <button
               onClick={() => {

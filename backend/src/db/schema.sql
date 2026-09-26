@@ -3,21 +3,30 @@
 
 -- ===================== Home page =====================
 
--- "Why People Love ZentraPay?" three-up feature grid
-CREATE TABLE IF NOT EXISTS home_highlights (
-  id SERIAL PRIMARY KEY,
-  title VARCHAR(150) NOT NULL,
-  description TEXT NOT NULL,
-  icon VARCHAR(50) NOT NULL DEFAULT 'smartphone', -- 'smartphone' | 'security' | 'speed'
-  image_url TEXT,
-  display_order INTEGER NOT NULL DEFAULT 0
+-- "Why People Love ZentraPay?" highlights
+CREATE TYPE highlight_type AS ENUM ('security', 'transactions', 'cross_border', 'speed', 'others');
+
+CREATE TABLE IF NOT EXISTS highlights (
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    title VARCHAR(50) NOT NULL,
+    description TEXT NOT NULL,
+    type highlight_type DEFAULT 'others',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+
 -- "Use Your Android or iOS Device to Manage Zentrapay" checklist
-CREATE TABLE IF NOT EXISTS device_features (
-  id SERIAL PRIMARY KEY,
-  description TEXT NOT NULL,
-  display_order INTEGER NOT NULL DEFAULT 0
+CREATE TYPE app_highlight_type AS ENUM ('security', 'ai', 'payment', 'others');
+
+CREATE TABLE IF NOT EXISTS app_highlights (
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    title VARCHAR(50) NOT NULL,
+    description TEXT NOT NULL,
+    type app_highlight_type DEFAULT 'others',
+    image_url TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Rotating testimonial carousel (Home + reused as social proof)
@@ -82,23 +91,15 @@ CREATE INDEX IF NOT EXISTS idx_blog_posts_category_id ON blog_posts(category_id)
 
 -- ===================== Features page =====================
 
-CREATE TABLE IF NOT EXISTS feature_categories (
-  id SERIAL PRIMARY KEY,
-  title VARCHAR(200) NOT NULL,
-  subtitle TEXT,
-  display_order INTEGER NOT NULL DEFAULT 0
-);
+GENERATE SEQUENCE IF NOT EXISTS feature_display_order_seq;
 
 CREATE TABLE IF NOT EXISTS features (
-  id SERIAL PRIMARY KEY,
-  category_id INTEGER NOT NULL REFERENCES feature_categories(id) ON DELETE CASCADE,
-  heading VARCHAR(250) NOT NULL,
+  id INT GENERATED ALWAYS IDENTITY PRIMARY KEY,
+  title varchar(50) NOT NULL,
   description TEXT NOT NULL,
   image_url TEXT,
   display_order INTEGER NOT NULL DEFAULT 0
 );
-
-CREATE INDEX IF NOT EXISTS idx_features_category_id ON features(category_id);
 
 -- ===================== Contact Us page =====================
 

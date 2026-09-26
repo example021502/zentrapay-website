@@ -85,11 +85,11 @@ export default function About() {
   };
 
   return (
-    <div className="w-full py-16 px-6 bg-gray-50 flex flex-col justify-center items-center space-y-24">
+    <div className="w-full py-8 px-4 bg-gray-50 flex flex-col justify-center items-center space-y-20">
       {/* Introduction Section */}
       <section
         key={"about_intro_section"}
-        className="w-full max-w-7xl text-center flex flex-col lg:flex-row justify-between items-center gap-12"
+        className="w-full max-w-7xl text-center flex flex-col lg:flex-row justify-between items-center gap-10"
       >
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -99,9 +99,10 @@ export default function About() {
           className="w-full lg:w-1/2 flex items-center justify-center"
         >
           <img
-            src={imgPlaceholder}
+            src={"https://i.ibb.co/nqVM6pXZ/a4df22d5df3a19ea8a65655462b1c1dc.jpg"}
+            onError={(e) => e.currentTarget.src = imgPlaceholder}
             alt="Zentrapay team"
-            className="rounded-2xl shadow-lg object-cover max-h-[450px] w-full"
+            className="rounded-xl object-cover max-h-[450px] w-full"
           />
         </motion.div>
         <motion.div
@@ -112,7 +113,7 @@ export default function About() {
           className="flex flex-col lg:w-1/2 w-full text-left items-start justify-center"
         >
           <span className="badge-purple mb-4">About Us</span>
-          <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 mb-4">
+          <h1 className="text-4xl font-bold tracking-tight text-gray-900 mb-4">
             Zentrapay, Empowering Financial Freedom
           </h1>
           <p className="text-lg text-gray-600 leading-relaxed">
@@ -127,7 +128,7 @@ export default function About() {
       {/* Leadership & Members Section */}
       <section className="w-full max-w-7xl flex flex-col">
         <div className="text-left mb-8">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 mb-2">
+          <h2 className="text-2xl font-bold tracking-tight text-gray-900 mb-2">
             Meet Our Leadership
           </h2>
           <p className="text-base text-gray-600">
@@ -163,24 +164,25 @@ export default function About() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, type: "tween", delay: i * 0.1 }}
                   whileHover={{ y: -8 }}
-                  className="card-hover group card-item snap-start shrink-0 w-[320px] sm:w-[360px]"
+                  className="card-hover group card-item snap-start shrink-0 w-[300px] sm:w-[340px]"
                 >
-                  <div className="overflow-hidden aspect-square w-full bg-gray-100">
+                  <div className="overflow-hidden aspect-square w-full h-70 bg-gray-100">
                     <motion.img
                       whileHover={{ scale: 1.08 }}
                       transition={{ duration: 0.4, type: "tween" }}
-                      src={member.profile_image_url ?? imgPlaceholder}
-                      alt={member.name}
+                      src={member.profile_image_url}
+                      onError={(e) => e.currentTarget.src = imgPlaceholder}
+                      alt={member.first_name}
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="p-6 flex flex-col grow justify-between text-left">
+                  <div className="p-4 flex flex-col grow justify-between text-left">
                     <div>
-                      <span className="badge-purple-sm inline-block mb-2">
+                      <span className="badge-purple inline-block mb-2">
                         {member.position}
                       </span>
                       <h3 className="text-xl font-bold text-gray-900 mb-2">
-                        {member.name}
+                        {member.first_name} {member.last_name}
                       </h3>
                       <p className="text-sm text-gray-600 leading-relaxed line-clamp-4">
                         {member.description}
@@ -205,9 +207,8 @@ export default function About() {
                 {members.map((_, i) => (
                   <span
                     key={i}
-                    className={`dot ${
-                      i === activeMemberIndex ? "dot-active" : "dot-inactive"
-                    }`}
+                    className={`dot ${i === activeMemberIndex ? "dot-active" : "dot-inactive"
+                      }`}
                   />
                 ))}
               </div>
@@ -228,7 +229,7 @@ export default function About() {
       <section className="w-full max-w-7xl flex flex-col">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
           <div className="text-left">
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900 mb-2">
+            <h2 className="text-2xl font-bold tracking-tight text-gray-900 mb-2">
               Our Milestones & History
             </h2>
             <p className="text-base text-gray-600">
@@ -260,7 +261,7 @@ export default function About() {
           <ConnectionNotice onRetry={retry} />
         ) : (
           <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
-            {achievements.slice(0, 2).map((item, i) => (
+            {achievements.slice(0, 3).map((item, i) => (
               <motion.div
                 key={item.id ?? i}
                 initial={{ opacity: 0, y: 40 }}
@@ -268,26 +269,27 @@ export default function About() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, type: "tween", delay: i * 0.1 }}
                 whileHover={{ y: -8 }}
-                className="bg-white max-w-md rounded-2xl border border-gray-100 shadow-sm hover:shadow-2xl transition-shadow duration-300 overflow-hidden flex flex-col group w-full"
+                className="bg-white max-w-md rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden flex flex-col group w-full"
               >
                 <div className="overflow-hidden aspect-video w-full bg-gray-100">
                   <motion.img
                     whileHover={{ scale: 1.08 }}
                     transition={{ duration: 0.4, type: "tween" }}
-                    src={item.image_url || imgPlaceholder}
+                    src={item.image_url}
+                    onError={(e) => e.currentTarget.src = imgPlaceholder}
                     alt={item.heading}
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <div className="p-6 flex flex-col grow justify-between text-left">
+                <div className="p-4 flex flex-col grow justify-between text-left">
                   <div>
-                    <span className="badge-success inline-block mb-3">
+                    <span className="badge-success inline-block mb-2">
                       {formatDate(item.achievement_date)}
                     </span>
                     <h3 className="text-xl font-bold text-gray-900 mb-3">
                       {item.heading}
                     </h3>
-                    <p className="text-sm text-gray-600 leading-relaxed">
+                    <p className="text-sm text-gray-600 leading-relaxed line-clamp-4">
                       {item.description}
                     </p>
                   </div>
@@ -337,7 +339,7 @@ export default function About() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, type: "tween", delay: i * 0.1 }}
                   whileHover={{ y: -8 }}
-                  className="card-item snap-start shrink-0 w-[320px] sm:w-[380px] bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-2xl transition-shadow duration-300 overflow-hidden flex flex-col group"
+                  className="card-item snap-start shrink-0 w-[300px] bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden flex flex-col group"
                 >
                   <div className="overflow-hidden aspect-video w-full bg-gray-100">
                     <motion.img
@@ -348,12 +350,12 @@ export default function About() {
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="p-6 flex flex-col grow justify-between text-left">
+                  <div className="p-4 flex flex-col grow justify-between text-left">
                     <div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-3">
-                        {collab.heading}
+                      <h3 className="text-xl font-bold text-gray-900 mb-1">
+                        {collab.partner_name}
                       </h3>
-                      <p className="text-sm text-gray-600 leading-relaxed">
+                      <p className="text-sm text-gray-600 leading-relaxed line-clamp-4">
                         {collab.description}
                       </p>
                     </div>
@@ -376,9 +378,8 @@ export default function About() {
                 {collaborations.map((_, i) => (
                   <span
                     key={i}
-                    className={`dot ${
-                      i === activeCollabIndex ? "dot-active" : "dot-inactive"
-                    }`}
+                    className={`dot ${i === activeCollabIndex ? "dot-active" : "dot-inactive"
+                      }`}
                   />
                 ))}
               </div>

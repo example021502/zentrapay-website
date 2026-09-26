@@ -8,7 +8,7 @@ const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
 
-const allowedOrigins = (process.env.CORS_ORIGIN || "http://10.206.155.19:4000")
+const allowedOrigins = (process.env.CORS_ORIGIN || "http://localhost:5173")
   .split(",")
   .map((o) => o.trim());
 
@@ -24,7 +24,7 @@ app.use((req, res) => {
 
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`🚀 Zentrapay API listening on http://10.206.155.19:${PORT}`);
+  console.log(`🚀 Zentrapay API listening on http://localhost:${PORT}`);
 });

@@ -9,7 +9,6 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { getContactInfo, submitContactMessage } from "../lib/api";
-import { FaTwitter } from "react-icons/fa";
 import { useApiData } from "../lib/useApiData";
 import ConnectionNotice from "./ui/ConnectionNotice";
 import { InfoRowSkeleton } from "./ui/Skeletons";
@@ -25,6 +24,30 @@ export default function Contact() {
   // failure itself is still logged to the console by useApiData).
   const { data, isLoading, isSlow } = useApiData(getContactInfo);
   const companyInfo = data?.companyInfo || null;
+
+  // The /contact endpoint returns nested arrays: contact_channels holds
+  // {phone_number, email_address, is_primary} and locations holds
+  // {location_name, type, address}. Nothing is a flat companyInfo.email /
+  // .phone / .address any more, so everything below maps over those arrays.
+  const contactChannels = companyInfo?.contact_channels || [];
+  const locations = companyInfo?.locations || [];
+
+  // Lead with the channel flagged is_primary, then the rest.
+  const byPrimary = (a, b) =>
+    Number(Boolean(b.is_primary)) - Number(Boolean(a.is_primary));
+
+  const emails = contactChannels
+    .filter((channel) => channel.email_address)
+    .sort(byPrimary);
+  const phones = contactChannels
+    .filter((channel) => channel.phone_number)
+    .sort(byPrimary);
+
+  // "headquarters" -> "Headquarters"
+  const humanize = (value) =>
+    String(value || "")
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase());
 
   const [formData, setFormData] = useState({
     name: "",
@@ -59,42 +82,32 @@ export default function Contact() {
     }
   };
 
-  // Handle interactive clicks on contact info cards to launch native applications
-  const handleButtonClick = (id) => {
-    switch (id) {
-      case "email": {
-        const emailAddress = companyInfo?.email || "support@zentrapay.com";
-        // Prefill subject and body prefix for the user's email client
-        const subject = encodeURIComponent("Support Inquiry - Zentrapay");
-        const body = encodeURIComponent(
-          "Hello Zentrapay Team,\n\nI would like to inquire about: ",
-        );
-        window.location.href = `mailto:${emailAddress}?subject=${subject}&body=${body}`;
-        break;
-      }
-      case "phone": {
-        const phoneNumber = companyInfo?.phone || "+15551234567";
-        // Trigger device's phone call handler
-        window.location.href = `tel:${phoneNumber}`;
-        break;
-      }
-      case "map": {
-        const address =
-          companyInfo?.address ||
-          "123 Fintech Avenue, Suite 400, San Francisco, CA";
-        window.open(
-          `https://maps.google.com/?q=${encodeURIComponent(address)}`,
-          "_blank",
-        );
-        break;
-      }
-      default:
-        break;
-    }
+  // Launch the relevant app/site for one of the published contact details
+  const openEmail = (emailAddress) => {
+    const subject = encodeURIComponent("Support Inquiry - Zentrapay");
+    const body = encodeURIComponent(
+      "Hello Zentrapay Team,\n\nI would like to inquire about: ",
+    );
+    window.location.assign(
+      `mailto:${emailAddress}?subject=${subject}&body=${body}`,
+    );
+  };
+
+  const openPhone = (phoneNumber) => {
+    // Strip spaces/dashes so the dialler gets a valid number
+    window.location.assign(`tel:${String(phoneNumber).replace(/[^\d+]/g, "")}`);
+  };
+
+  const openMap = (address) => {
+    window.open(
+      `https://maps.google.com/?q=${encodeURIComponent(address)}`,
+      "_blank",
+      "noopener,noreferrer",
+    );
   };
 
   return (
-    <div className="w-full py-15 px-5 bg-gray-50 flex flex-col justify-center items-center space-y-16">
+    <div className="w-full py-8 px-5 bg-gray-50 flex flex-col justify-center items-center space-y-16">
       {/* Intro Section */}
       <section
         key={"contact_intro_section"}
@@ -136,85 +149,108 @@ export default function Contact() {
               </>
             ) : (
               <div className="flex flex-col gap-6">
-                {/* Email Button/Item */}
-                <div
-                  onClick={() => handleButtonClick("email")}
-                  className="flex items-start gap-4 cursor-pointer group"
-                >
-                  <div className="p-3 bg-purple-50 rounded-2xl text-brand-purple group-hover:bg-purple-100 transition">
-                    <Mail className="w-6 h-6" />
+                {/* One row per published email in company_contact_channels */}
+                {emails.map((channel, i) => (
+                  <div
+                    key={`email-${i}-${channel.email_address}`}
+                    onClick={() => openEmail(channel.email_address)}
+                    className="flex items-start gap-4 cursor-pointer group"
+                  >
+                    <div className="p-3 bg-purple-50 rounded-2xl text-brand-purple group-hover:bg-purple-100 transition">
+                      <Mail className="w-6 h-6" />
+                    </div>
+                    <div className="flex flex-col text-left">
+                      <span className="text-sm font-semibold text-gray-900 group-hover:text-brand-purple transition flex items-center gap-2">
+                        Email Us
+                        {channel.is_primary && (
+                          <span className="text-[10px] font-bold uppercase tracking-wide bg-brand-purple text-white px-1.5 py-0.5 rounded-full">
+                            Primary
+                          </span>
+                        )}
+                      </span>
+                      <span className="text-sm text-gray-600 break-all">
+                        {channel.email_address}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex flex-col text-left">
-                    <span className="text-sm font-semibold text-gray-900 group-hover:text-brand-purple transition">
-                      Email Us
-                    </span>
-                    <span className="text-sm text-gray-600">
-                      {companyInfo?.email || "support@zentrapay.com"}
-                    </span>
-                  </div>
-                </div>
+                ))}
 
-                {/* Phone Button/Item */}
-                <div
-                  onClick={() => handleButtonClick("phone")}
-                  className="flex items-start gap-4 cursor-pointer group"
-                >
-                  <div className="p-3 bg-purple-50 rounded-2xl text-brand-purple group-hover:bg-purple-100 transition">
-                    <Phone className="w-6 h-6" />
+                {/* One row per published phone number */}
+                {phones.map((channel, i) => (
+                  <div
+                    key={`phone-${i}-${channel.phone_number}`}
+                    onClick={() => openPhone(channel.phone_number)}
+                    className="flex items-start gap-4 cursor-pointer group"
+                  >
+                    <div className="p-3 bg-purple-50 rounded-2xl text-brand-purple group-hover:bg-purple-100 transition">
+                      <Phone className="w-6 h-6" />
+                    </div>
+                    <div className="flex flex-col text-left">
+                      <span className="text-sm font-semibold text-gray-900 group-hover:text-brand-purple transition flex items-center gap-2">
+                        Call Us
+                        {channel.is_primary && (
+                          <span className="text-[10px] font-bold uppercase tracking-wide bg-brand-purple text-white px-1.5 py-0.5 rounded-full">
+                            Primary
+                          </span>
+                        )}
+                      </span>
+                      <span className="text-sm text-gray-600">
+                        {channel.phone_number}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex flex-col text-left">
-                    <span className="text-sm font-semibold text-gray-900 group-hover:text-brand-purple transition">
-                      Call Us
-                    </span>
-                    <span className="text-sm text-gray-600">
-                      {companyInfo?.phone || "+1 (555) 123-4567"}
-                    </span>
-                  </div>
-                </div>
+                ))}
 
-                {/* Office Location Item */}
-                <div
-                  onClick={() => handleButtonClick("map")}
-                  className="flex items-start gap-4 cursor-pointer group"
-                >
-                  <div className="p-3 bg-purple-50 rounded-2xl text-brand-purple group-hover:bg-purple-100 transition">
-                    <MapPin className="w-6 h-6" />
+                {/* One row per office from company_locations */}
+                {locations.map((location, i) => (
+                  <div
+                    key={`location-${i}-${location.location_name}`}
+                    onClick={() => openMap(location.address)}
+                    className="flex items-start gap-4 cursor-pointer group"
+                  >
+                    <div className="p-3 bg-purple-50 rounded-2xl text-brand-purple group-hover:bg-purple-100 transition">
+                      <MapPin className="w-6 h-6" />
+                    </div>
+                    <div className="flex flex-col text-left">
+                      <span className="text-sm font-semibold text-gray-900 group-hover:text-brand-purple transition flex items-center gap-2 flex-wrap">
+                        {location.location_name || "Office Location"}
+                        {location.type && (
+                          <span className="text-[10px] font-bold uppercase tracking-wide bg-purple-50 text-brand-purple px-1.5 py-0.5 rounded-full">
+                            {humanize(location.type)}
+                          </span>
+                        )}
+                      </span>
+                      <span className="text-sm text-gray-600">
+                        {location.address}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex flex-col text-left">
-                    <span className="text-sm font-semibold text-gray-900 group-hover:text-brand-purple transition">
-                      Office Location
-                    </span>
-                    <span className="text-sm text-gray-600">
-                      {companyInfo?.address ||
-                        "123 Fintech Avenue, Suite 400, San Francisco, CA"}
-                    </span>
-                  </div>
-                </div>
+                ))}
+
+                {emails.length === 0 &&
+                  phones.length === 0 &&
+                  locations.length === 0 && (
+                    <p className="text-sm text-gray-500">
+                      Contact details are not available right now. Please use the
+                      form and our team will get back to you.
+                    </p>
+                  )}
               </div>
             )}
           </div>
 
-          {/* Social Links Footer */}
+          {/* Social Links Footer - only the fields the new schema still exposes */}
           <div className="pt-4 border-t border-gray-100 flex flex-col gap-3 text-left">
             <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
               Connect With Us
             </span>
             <div className="flex items-center gap-3">
               <a
-                href={companyInfo?.twitter_url || "https://twitter.com"}
+                href={companyInfo?.website_url || "https://zentrapay.org"}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2.5 bg-gray-50 hover:bg-purple-50 text-gray-600 hover:text-brand-purple rounded-full transition cursor-pointer"
-                aria-label="Social Feed"
-              >
-                <FaTwitter className="w-5 h-5" />
-              </a>
-              <a
-                href={companyInfo?.website_url || "https://zentrapay.com"}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2.5 bg-gray-50 hover:bg-purple-50 text-gray-600 hover:text-brand-purple rounded-full transition cursor-pointer"
-                aria-label="Global Network"
+                aria-label={`Visit ${companyInfo?.company_name || "our"} website`}
               >
                 <Globe className="w-5 h-5" />
               </a>
