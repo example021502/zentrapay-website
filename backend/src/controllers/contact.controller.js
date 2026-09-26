@@ -4,6 +4,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 async function getContactInfo(req, res, next) {
   try {
+<<<<<<< HEAD
     // Cleaned SQL query with proper JOINs and string matching
     // Aggregates child records into nested JSON arrays for direct consumption in React/TypeScript
     const result = await query(
@@ -34,6 +35,11 @@ async function getContactInfo(req, res, next) {
   LEFT JOIN company_contact_channels co ON co.company_id = c.id
   WHERE LOWER(c.company_name) = 'zentrapay'
   GROUP BY c.id;`
+=======
+    const result = await query(
+      `SELECT email, phone, address, twitter_url, website_url
+       FROM company_info ORDER BY id ASC LIMIT 1`,
+>>>>>>> 4b6e5b825f6b4f5114de5740c8a8ba68a741b8e6
     );
     res.json({ companyInfo: result.rows[0] || null });
   } catch (err) {
