@@ -4,7 +4,6 @@ async function getAbout(req, res, next) {
   try {
     const [members, achievements, collaborations] = await Promise.all([
       query(
-<<<<<<< HEAD
         `SELECT * FROM team_members ORDER BY display_order ASC`,
       ),
       query(
@@ -12,18 +11,6 @@ async function getAbout(req, res, next) {
       ),
       query(
         `SELECT * FROM collaborations ORDER BY display_order ASC`,
-=======
-        `SELECT id, name, position, profile_image_url, description
-         FROM team_members ORDER BY id ASC`,
-      ),
-      query(
-        `SELECT id, heading, achievement_date, image_url, description
-         FROM achievements ORDER BY id ASC`,
-      ),
-      query(
-        `SELECT id, heading, image_url, description
-         FROM collaborations ORDER BY id ASC`,
->>>>>>> 4b6e5b825f6b4f5114de5740c8a8ba68a741b8e6
       ),
     ]);
 
